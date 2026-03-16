@@ -1,0 +1,499 @@
+{
+  "info": {
+    "_postman_id": "00000000-0000-0000-0000-000000000003",
+    "name": "NBFC Platform - Ledger, Reports & Config",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Account Ledger (Double Entry), Reports, and Admin Configuration APIs"
+  },
+  "item": [
+    {
+      "name": "Ledger Accounts",
+      "item": [
+        {
+          "name": "Create Ledger Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountName\": \"Customer Loan Account - Loan #123\",\n  \"accountType\": \"CUSTOMER_LOAN_ACCOUNT\",\n  \"ownerId\": \"{{customerId}}\",\n  \"ownerType\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/accounts",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "accounts"]
+            },
+            "description": "Create a new ledger account. Requires ADMIN or LENDER role. Account types: CUSTOMER_LOAN_ACCOUNT, LENDER_SETTLEMENT_ACCOUNT, DEALER_COMMISSION_ACCOUNT, INTEREST_INCOME_ACCOUNT, PRINCIPAL_RECEIVABLE_ACCOUNT, CASH_COLLECTION_ACCOUNT, PAYMENT_GATEWAY_ACCOUNT"
+          }
+        },
+        {
+          "name": "List Ledger Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/accounts",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "accounts"]
+            },
+            "description": "Get list of ledger accounts. Filtered by user role (dealers see commission accounts, lenders see settlement accounts, admin sees all)."
+          }
+        },
+        {
+          "name": "Get Ledger Account by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/accounts/{{accountId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "accounts", "{{accountId}}"]
+            },
+            "description": "Get ledger account details by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ledger Entries",
+      "item": [
+        {
+          "name": "Create Ledger Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referenceType\": \"loan\",\n  \"referenceId\": \"{{loanId}}\",\n  \"description\": \"Loan disbursement entry\",\n  \"transactions\": [\n    {\n      \"accountId\": \"{{customerLoanAccountId}}\",\n      \"type\": \"DEBIT\",\n      \"amount\": 100000\n    },\n    {\n      \"accountId\": \"{{lenderSettlementAccountId}}\",\n      \"type\": \"CREDIT\",\n      \"amount\": 100000\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/entries",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "entries"]
+            },
+            "description": "Create a ledger entry with double-entry transactions. Total debits must equal total credits. Requires ADMIN or LENDER role."
+          }
+        },
+        {
+          "name": "List Ledger Entries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/entries",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "entries"]
+            },
+            "description": "Get list of ledger entries with transactions. Filtered by user role."
+          }
+        },
+        {
+          "name": "Get Ledger Entry by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/entries/{{entryId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "entries", "{{entryId}}"]
+            },
+            "description": "Get ledger entry details with all transactions."
+          }
+        },
+        {
+          "name": "Get Ledger Entries by Loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/ledger/entries/loan/{{loanId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "ledger", "entries", "loan", "{{loanId}}"]
+            },
+            "description": "Get all ledger entries for a specific loan."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Disbursement Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/reports/disbursement?startDate=2024-01-01&endDate=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reports", "disbursement"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get disbursement report with total disbursed amount and loan count. Supports date filters."
+          }
+        },
+        {
+          "name": "Collections Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/reports/collections?startDate=2024-01-01&endDate=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reports", "collections"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get collections report with total collected amount. Shows only approved collections."
+          }
+        },
+        {
+          "name": "Interest Income Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/reports/interest-income?startDate=2024-01-01&endDate=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reports", "interest-income"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get interest income report showing total interest earned from paid EMIs."
+          }
+        },
+        {
+          "name": "Loan Performance Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/reports/loan-performance?startDate=2024-01-01&endDate=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reports", "loan-performance"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get loan performance report with active/closed loans, EMI stats, and performance metrics."
+          }
+        },
+        {
+          "name": "NPA Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/reports/npa?startDate=2024-01-01&endDate=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "reports", "npa"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get NPA report showing 30/60/90 days overdue statistics and total NPA amount."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Configuration",
+      "item": [
+        {
+          "name": "Create Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"late_fee\",\n  \"value\": 500,\n  \"description\": \"Late fee charged for overdue EMIs\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/config",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "config"]
+            },
+            "description": "Create a new configuration. Admin only. Example keys: late_fee, penalty_rate, emi_grace_days, dealer_commission_rate"
+          }
+        },
+        {
+          "name": "List Configs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/config",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "config"]
+            },
+            "description": "Get list of all configuration settings."
+          }
+        },
+        {
+          "name": "Get Config by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/config/{{configId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "config", "{{configId}}"]
+            },
+            "description": "Get configuration details by ID."
+          }
+        },
+        {
+          "name": "Update Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 750,\n  \"description\": \"Updated late fee amount\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/config/{{configId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "config", "{{configId}}"]
+            },
+            "description": "Update configuration value. Admin only."
+          }
+        },
+        {
+          "name": "Delete Config",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/config/{{configId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "config", "{{configId}}"]
+            },
+            "description": "Delete a configuration. Admin only."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accountId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "entryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loanId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerLoanAccountId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "lenderSettlementAccountId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "configId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

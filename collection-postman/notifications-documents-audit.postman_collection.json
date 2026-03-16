@@ -1,0 +1,290 @@
+{
+  "info": {
+    "_postman_id": "00000000-0000-0000-0000-000000000002",
+    "name": "NBFC Platform - Notifications, Documents & Audit Logs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Notification, Document Management, and Audit Log APIs"
+  },
+  "item": [
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Send Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"title\": \"Loan Approved\",\n  \"message\": \"Your loan application has been approved. Please check your dashboard for details.\",\n  \"channel\": \"SMS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/notifications/send",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "notifications", "send"]
+            },
+            "description": "Send notification via SMS, EMAIL, WHATSAPP, or PUSH. Requires ADMIN or LENDER role."
+          }
+        },
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/notifications",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "notifications"]
+            },
+            "description": "Get list of notifications. Filtered by user role."
+          }
+        },
+        {
+          "name": "Get Notification by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/notifications/{{notificationId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "notifications", "{{notificationId}}"]
+            },
+            "description": "Get notification details by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"loanId\": \"{{loanId}}\",\n  \"documentType\": \"PAN\",\n  \"fileUrl\": \"https://example.com/documents/pan.pdf\",\n  \"fileName\": \"pan_card.pdf\",\n  \"fileSize\": 102400\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/documents/upload",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "documents", "upload"]
+            },
+            "description": "Upload a document. Can be linked to customer or loan. Document types: AADHAR, PAN, BANK_STATEMENT, ADDRESS_PROOF, LOAN_AGREEMENT, OTHER"
+          }
+        },
+        {
+          "name": "Get Document by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/documents/{{documentId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "documents", "{{documentId}}"]
+            },
+            "description": "Get document details by ID."
+          }
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/documents/{{documentId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "documents", "{{documentId}}"]
+            },
+            "description": "Delete a document. Dealers can only delete documents for their customers."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "List Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/audit-logs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "audit-logs"]
+            },
+            "description": "Get list of audit logs. Admin sees all, others see filtered logs based on their role."
+          }
+        },
+        {
+          "name": "Get Audit Log by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/audit-logs/{{auditLogId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "audit-logs", "{{auditLogId}}"]
+            },
+            "description": "Get audit log details by ID."
+          }
+        },
+        {
+          "name": "Get Audit Logs by User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/audit-logs/user/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "audit-logs", "user", "{{userId}}"]
+            },
+            "description": "Get all audit logs for a specific user. Users can only view their own logs unless admin."
+          }
+        },
+        {
+          "name": "Get Audit Logs by Entity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/audit-logs/entity/{{entityId}}?entityType=loan",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "audit-logs", "entity", "{{entityId}}"],
+              "query": [
+                {
+                  "key": "entityType",
+                  "value": "loan",
+                  "description": "Entity type: loan, customer, user, etc."
+                }
+              ]
+            },
+            "description": "Get all audit logs for a specific entity (loan, customer, etc.). Use entityType query param to specify type."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loanId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notificationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auditLogId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "entityId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

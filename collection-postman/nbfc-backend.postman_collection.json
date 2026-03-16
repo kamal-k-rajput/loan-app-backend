@@ -1,0 +1,2316 @@
+{
+  "info": {
+    "_postman_id": "00000000-0000-0000-0000-000000000001",
+    "name": "NBFC Lending Platform Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:4000/api/auth/refresh-token",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-user-id",
+                "value": "{{userId}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newPassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/change-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/forgot-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password (demo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"demo-token\",\n  \"newPassword\": \"newPassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/reset-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "reset-password"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-id",
+                "value": "{{userId}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/auth/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-user-id",
+                "value": "{{userId}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"phone\": \"+911234567890\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/profile/update",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "auth", "profile", "update"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"phone\": \"+911234567890\",\n  \"password\": \"password123\",\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Admin\",\n  \"phone\": \"+911111111111\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Activate User",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/{{userId}}/activate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "{{userId}}", "activate"]
+            }
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/{{userId}}/deactivate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "{{userId}}", "deactivate"]
+            }
+          }
+        },
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/admin/users/roles/list",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "admin", "users", "roles", "list"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dealers",
+      "item": [
+        {
+          "name": "Create Dealer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealerName\": \"ABC Motors\",\n  \"ownerName\": \"Owner Name\",\n  \"phone\": \"+911234567800\",\n  \"email\": \"dealer@example.com\",\n  \"address\": {\n    \"city\": \"City\",\n    \"state\": \"State\"\n  },\n  \"commissionRate\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/dealers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers"]
+            }
+          }
+        },
+        {
+          "name": "List Dealers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealer by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Dealer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealerName\": \"Updated Motors\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Dealer",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Dealer Loans",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}/loans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}", "loans"]
+            }
+          }
+        },
+        {
+          "name": "Dealer Collections",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}/collections",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}", "collections"]
+            }
+          }
+        },
+        {
+          "name": "Dealer Earnings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/dealers/{{dealerId}}/earnings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealers", "{{dealerId}}", "earnings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lenders",
+      "item": [
+        {
+          "name": "Create Lender",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lenderName\": \"NBFC One\",\n  \"contactPerson\": \"Contact\",\n  \"email\": \"lender@example.com\",\n  \"phone\": \"+911234567801\",\n  \"settlementAccount\": \"ACC123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/lenders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders"]
+            }
+          }
+        },
+        {
+          "name": "List Lenders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/lenders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders"]
+            }
+          }
+        },
+        {
+          "name": "Get Lender by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/lenders/{{lenderId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders", "{{lenderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Lender",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lenderName\": \"Updated NBFC\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/lenders/{{lenderId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders", "{{lenderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Lender",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:4000/api/lenders/{{lenderId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders", "{{lenderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Lender Portfolio",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/lenders/{{lenderId}}/portfolio",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders", "{{lenderId}}", "portfolio"]
+            }
+          }
+        },
+        {
+          "name": "Lender Collections",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/lenders/{{lenderId}}/collections",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lenders", "{{lenderId}}", "collections"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Customer One\",\n  \"phone\": \"+919999999999\",\n  \"email\": \"customer@example.com\",\n  \"dob\": \"1990-01-01\",\n  \"address\": {\n    \"line1\": \"Street 1\",\n    \"city\": \"City\",\n    \"state\": \"State\",\n    \"pincode\": \"123456\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/customers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers"]
+            }
+          }
+        },
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/customers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Customer\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Customer Loans",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}/loans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}", "loans"]
+            }
+          }
+        },
+        {
+          "name": "Customer EMIs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}/emis",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}", "emis"]
+            }
+          }
+        },
+        {
+          "name": "Customer Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:4000/api/customers/{{customerId}}/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "customers", "{{customerId}}", "payments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "KYC Management",
+      "item": [
+        {
+          "name": "Upload KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"documentType\": \"PAN\",\n  \"fileUrl\": \"https://example.com/document.pdf\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/upload",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Get KYC by Customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/{{customerId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "{{customerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Verify KYC",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"KYC verified successfully\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/{{customerId}}/verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "{{customerId}}", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Reject KYC",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Document quality is poor\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/{{customerId}}/reject",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "{{customerId}}", "reject"]
+            }
+          }
+        },
+        {
+          "name": "PAN Verify",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"panNumber\": \"ABCDE1234F\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/pan-verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "pan-verify"]
+            }
+          }
+        },
+        {
+          "name": "Aadhar Verify",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"aadharNumber\": \"123456789012\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/kyc/aadhar-verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "kyc", "aadhar-verify"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Loan Products",
+      "item": [
+        {
+          "name": "Create Loan Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Auto Loan\",\n  \"category\": \"AUTO\",\n  \"minAmount\": 50000,\n  \"maxAmount\": 500000,\n  \"minTenure\": 12,\n  \"maxTenure\": 60\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loan-products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loan-products"]
+            }
+          }
+        },
+        {
+          "name": "List Loan Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loan-products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loan-products"]
+            }
+          }
+        },
+        {
+          "name": "Get Loan Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loan-products/{{productId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loan-products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Loan Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maxAmount\": 600000\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loan-products/{{productId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loan-products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Loan Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loan-products/{{productId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loan-products", "{{productId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interest Rates",
+      "item": [
+        {
+          "name": "Create Interest Rate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lenderId\": \"{{lenderId}}\",\n  \"productCategory\": \"AUTO\",\n  \"interestRate\": 12.5,\n  \"processingFee\": 2000\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates"]
+            }
+          }
+        },
+        {
+          "name": "List Interest Rates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates"]
+            }
+          }
+        },
+        {
+          "name": "Get Interest Rate by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates/{{rateId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates", "{{rateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Interest Rate",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interestRate\": 13.0\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates/{{rateId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates", "{{rateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Interest Rate",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates/{{rateId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates", "{{rateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Interest Rates by Lender",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/interest-rates/lender/{{lenderId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "interest-rates", "lender", "{{lenderId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Loans",
+      "item": [
+        {
+          "name": "Apply Loan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"productId\": \"{{productId}}\",\n  \"loanAmount\": 100000,\n  \"tenure\": 24\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/apply",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "apply"]
+            }
+          }
+        },
+        {
+          "name": "List Loans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans"]
+            }
+          }
+        },
+        {
+          "name": "Get Loan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Loan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanAmount\": 120000\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/update",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "update"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Loan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/cancel",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Get Loans by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/status/UNDER_REVIEW",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "status", "UNDER_REVIEW"]
+            }
+          }
+        },
+        {
+          "name": "Approve Loan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interestRate\": 12.5,\n  \"processingFee\": 2000,\n  \"remarks\": \"Loan approved\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Reject Loan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Credit score too low\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/reject",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "reject"]
+            }
+          }
+        },
+        {
+          "name": "Disburse Loan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"disbursedAmount\": 98000,\n  \"disbursementDate\": \"2024-01-15\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/disburse",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "disburse"]
+            }
+          }
+        },
+        {
+          "name": "Get EMI Schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/emi-schedule",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "emi-schedule"]
+            }
+          }
+        },
+        {
+          "name": "Generate EMI Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/generate-emi",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "generate-emi"]
+            }
+          }
+        },
+        {
+          "name": "Calculate Prepayment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/prepayment-calc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "prepayment-calc"]
+            }
+          }
+        },
+        {
+          "name": "Process Prepayment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prepaymentAmount\": 50000,\n  \"paymentMode\": \"CASH\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/loans/{{loanId}}/prepayment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "loans", "{{loanId}}", "prepayment"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disbursements",
+      "item": [
+        {
+          "name": "List Disbursements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/disbursements",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "disbursements"]
+            }
+          }
+        },
+        {
+          "name": "Get Disbursement by Loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/disbursements/{{loanId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "disbursements", "{{loanId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "EMIs",
+      "item": [
+        {
+          "name": "List EMIs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/emis",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "emis"]
+            }
+          }
+        },
+        {
+          "name": "Get EMI by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/emis/{{emiId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "emis", "{{emiId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get EMIs by Loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/emis/loan/{{loanId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "emis", "loan", "{{loanId}}"]
+            }
+          }
+        },
+        {
+          "name": "Pay EMI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000,\n  \"paymentMode\": \"CASH\",\n  \"transactionId\": \"TXN123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/emis/{{emiId}}/pay",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "emis", "{{emiId}}", "pay"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"emiId\": \"{{emiId}}\",\n  \"amount\": 5000,\n  \"paymentMode\": \"CASH\",\n  \"transactionId\": \"TXN123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/payments/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "create"]
+            }
+          }
+        },
+        {
+          "name": "List Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/payments/{{paymentId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "{{paymentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Payments by Loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/payments/loan/{{loanId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "loan", "{{loanId}}"]
+            }
+          }
+        },
+        {
+          "name": "Razorpay Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emiId\": \"{{emiId}}\",\n  \"amount\": 5000\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/payments/razorpay/create-order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "razorpay", "create-order"]
+            }
+          }
+        },
+        {
+          "name": "Razorpay Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.captured\",\n  \"payload\": {\n    \"payment\": {\n      \"entity\": {\n        \"order_id\": \"order_123\",\n        \"payment_id\": \"pay_123\",\n        \"amount\": 5000\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/payments/razorpay/webhook",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "razorpay", "webhook"]
+            }
+          }
+        },
+        {
+          "name": "Razorpay Verify",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razorpay_order_id\": \"order_123\",\n  \"razorpay_payment_id\": \"pay_123\",\n  \"razorpay_signature\": \"signature_123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/payments/razorpay/verify",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "payments", "razorpay", "verify"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Collections",
+      "item": [
+        {
+          "name": "Record Collection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loanId\": \"{{loanId}}\",\n  \"emiId\": \"{{emiId}}\",\n  \"amountCollected\": 5000\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/dealer/collections/record",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealer", "collections", "record"]
+            }
+          }
+        },
+        {
+          "name": "List Collections",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/dealer/collections",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealer", "collections"]
+            }
+          }
+        },
+        {
+          "name": "Get Collection by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/dealer/collections/{{collectionId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "dealer", "collections", "{{collectionId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Collections (Lender)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/lender/collections/pending",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lender", "collections", "pending"]
+            }
+          }
+        },
+        {
+          "name": "Approve Collection (Lender)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Collection approved\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/lender/collections/{{collectionId}}/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lender", "collections", "{{collectionId}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Reject Collection (Lender)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Amount mismatch\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/lender/collections/{{collectionId}}/reject",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lender", "collections", "{{collectionId}}", "reject"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lender Approvals",
+      "item": [
+        {
+          "name": "Get Pending Loan Approvals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/lender/loan-approvals",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "lender", "loan-approvals"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NPA Monitoring",
+      "item": [
+        {
+          "name": "Get NPA 30 Days",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/npa/30days",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "npa", "30days"]
+            }
+          }
+        },
+        {
+          "name": "Get NPA 60 Days",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/npa/60days",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "npa", "60days"]
+            }
+          }
+        },
+        {
+          "name": "Get NPA 90 Days",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/npa/90days",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "npa", "90days"]
+            }
+          }
+        },
+        {
+          "name": "Get NPA Loans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/npa/loans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "npa", "loans"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboards",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Admin Overview",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/admin/overview",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "admin", "overview"]
+                }
+              }
+            },
+            {
+              "name": "Admin Disbursement",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/admin/disbursement",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "admin", "disbursement"]
+                }
+              }
+            },
+            {
+              "name": "Admin Collections",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/admin/collections",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "admin", "collections"]
+                }
+              }
+            },
+            {
+              "name": "Admin NPA",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/admin/npa",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "admin", "npa"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lender",
+          "item": [
+            {
+              "name": "Lender Portfolio",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/lender/portfolio",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "lender", "portfolio"]
+                }
+              }
+            },
+            {
+              "name": "Lender Disbursement",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/lender/disbursement",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "lender", "disbursement"]
+                }
+              }
+            },
+            {
+              "name": "Lender Outstanding",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/lender/outstanding",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "lender", "outstanding"]
+                }
+              }
+            },
+            {
+              "name": "Lender NPA",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/lender/npa",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "lender", "npa"]
+                }
+              }
+            },
+            {
+              "name": "Lender Pending Collections",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/lender/pending-collections",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "lender", "pending-collections"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dealer",
+          "item": [
+            {
+              "name": "Dealer Sales Funnel",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/dealer/sales-funnel",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "dealer", "sales-funnel"]
+                }
+              }
+            },
+            {
+              "name": "Dealer Collections",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/dealer/collections",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "dealer", "collections"]
+                }
+              }
+            },
+            {
+              "name": "Dealer Earnings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/dealer/earnings",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "dealer", "earnings"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer",
+          "item": [
+            {
+              "name": "Customer Loans",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/customer/loans?customerId={{customerId}}",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "customer", "loans"],
+                  "query": [
+                    {
+                      "key": "customerId",
+                      "value": "{{customerId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Customer EMIs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/customer/emis?customerId={{customerId}}",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "customer", "emis"],
+                  "query": [
+                    {
+                      "key": "customerId",
+                      "value": "{{customerId}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Customer Payment History",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:4000/api/dashboard/customer/payment-history?customerId={{customerId}}",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "4000",
+                  "path": ["api", "dashboard", "customer", "payment-history"],
+                  "query": [
+                    {
+                      "key": "customerId",
+                      "value": "{{customerId}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "dealerId",
+      "value": ""
+    },
+    {
+      "key": "lenderId",
+      "value": ""
+    },
+    {
+      "key": "customerId",
+      "value": ""
+    },
+    {
+      "key": "loanId",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "rateId",
+      "value": ""
+    },
+    {
+      "key": "emiId",
+      "value": ""
+    },
+    {
+      "key": "paymentId",
+      "value": ""
+    },
+    {
+      "key": "collectionId",
+      "value": ""
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    }
+  ]
+}
+
