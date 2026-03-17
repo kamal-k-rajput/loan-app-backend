@@ -6,7 +6,7 @@ import {
   deleteUserService,
   activateUserService,
   deactivateUserService,
-  listRolesService
+  listRolesService,
 } from "./adminUser.services.js";
 
 export async function createUserController(req, res, next) {
@@ -24,8 +24,26 @@ export async function listUsersController(req, res, next) {
   try {
     const db = req.app.locals.db;
     const session = req.mongoSession;
-    const users = await listUsersService(db, session);
-    return res.success(users, "USERS_LIST");
+    const {
+      role,
+      fromDate,
+      toDate,
+      limit: rawLimit,
+      offset: rawOffset,
+    } = req.query;
+
+    const limit = Number.parseInt(rawLimit ?? "20", 10);
+    const offset = Number.parseInt(rawOffset ?? "0", 10);
+
+    const result = await listUsersService(db, session, {
+      role,
+      fromDate,
+      toDate,
+      limit,
+      offset,
+    });
+
+    return res.success(result, "USERS_LIST");
   } catch (err) {
     next(err);
   }
@@ -47,7 +65,12 @@ export async function updateUserController(req, res, next) {
   try {
     const db = req.app.locals.db;
     const session = req.mongoSession;
-    const user = await updateUserService(db, session, req.params.userId, req.body);
+    const user = await updateUserService(
+      db,
+      session,
+      req.params.userId,
+      req.body,
+    );
     if (!user) return res.fail(404, "USER_NOT_FOUND");
     return res.success(user, "USER_UPDATED");
   } catch (err) {
@@ -99,4 +122,3 @@ export async function listRolesController(req, res, next) {
     next(err);
   }
 }
-

@@ -17,10 +17,40 @@ export async function createUser(db, session, doc) {
   return { _id: result.insertedId, ...doc, status: "ACTIVE" };
 }
 
-export async function listUsers(db, session) {
-  return usersCollection(db)
-    .find({}, { session })
+export async function listUsers(
+  db,
+  session,
+  { role, fromDate, toDate, limit, offset },
+) {
+  const query = {};
+
+  if (role) {
+    query.role = role;
+  }
+
+  if (fromDate || toDate) {
+    query.createdAt = {};
+    if (fromDate) {
+      query.createdAt.$gte = new Date(fromDate);
+    }
+    if (toDate) {
+      // include the whole end day
+      const end = new Date(toDate);
+      end.setHours(23, 59, 59, 999);
+      query.createdAt.$lte = end;
+    }
+  }
+
+  const cursor = usersCollection(db).find(query, { session });
+
+  const total = await cursor.clone().count();
+
+  const docs = await cursor
+    .skip(offset)
+    .limit(limit)
     .toArray();
+
+  return { total, docs };
 }
 
 export async function getUserById(db, session, userId) {

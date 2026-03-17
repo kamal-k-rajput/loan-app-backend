@@ -4,7 +4,7 @@ import {
   findUserByEmail,
   findUserById,
   updateUserPassword,
-  updateUserProfile
+  updateUserProfile,
 } from "./auth.repositories.js";
 import { signAuthToken } from "../../utils/jwt.js";
 
@@ -31,14 +31,15 @@ export async function loginService(db, session, { email, password }) {
   const tokenPayload = {
     userId: user._id.toString(),
     role: user.role,
+    name: user.name,
     dealerId: user.dealerId ? user.dealerId.toString() : null,
-    lenderId: user.lenderId ? user.lenderId.toString() : null
+    lenderId: user.lenderId ? user.lenderId.toString() : null,
   };
   const token = signAuthToken(tokenPayload);
 
   return {
     ...tokenPayload,
-    token
+    token,
   };
 }
 
@@ -50,7 +51,12 @@ export async function refreshTokenService() {
   return { refreshed: true };
 }
 
-export async function changePasswordService(db, session, userId, { oldPassword, newPassword }) {
+export async function changePasswordService(
+  db,
+  session,
+  userId,
+  { oldPassword, newPassword },
+) {
   if (!userId) return false;
   const user = await findUserById(db, session, userId);
   if (!user) return false;
@@ -72,7 +78,11 @@ export async function forgotPasswordService(db, session, { email }) {
   return { sent: true, token };
 }
 
-export async function resetPasswordService(db, session, { token, newPassword }) {
+export async function resetPasswordService(
+  db,
+  session,
+  { token, newPassword },
+) {
   if (!token) return false;
   // In production, lookup token → user. Here we just simulate failure/success.
   const dummyUser = await db.collection("users").findOne({}, { session });
@@ -97,4 +107,3 @@ export async function updateProfileService(db, session, userId, updates) {
   const { passwordHash, ...rest } = updated;
   return { ...rest, id: updated._id.toString() };
 }
-

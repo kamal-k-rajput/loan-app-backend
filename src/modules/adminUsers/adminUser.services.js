@@ -7,7 +7,7 @@ import {
   updateUser,
   deleteUser,
   setUserStatus,
-  listRoles
+  listRoles,
 } from "./adminUser.repositories.js";
 
 const BCRYPT_ROUNDS = 10;
@@ -24,12 +24,25 @@ export async function createUserService(db, session, payload) {
   return safe;
 }
 
-export async function listUsersService(db, session) {
-  const users = await listUsers(db, session);
-  return users.map((u) => {
+export async function listUsersService(
+  db,
+  session,
+  { role, fromDate, toDate, limit, offset },
+) {
+  const { total, docs } = await listUsers(db, session, {
+    role,
+    fromDate,
+    toDate,
+    limit,
+    offset,
+  });
+
+  const items = docs.map((u) => {
     const { passwordHash, ...rest } = u;
     return { ...rest, id: u._id.toString() };
   });
+
+  return { total, items, limit, offset };
 }
 
 export async function getUserService(db, session, userId) {

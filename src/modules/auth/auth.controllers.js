@@ -6,7 +6,7 @@ import {
   forgotPasswordService,
   resetPasswordService,
   getProfileService,
-  updateProfileService
+  updateProfileService,
 } from "./auth.services.js";
 
 export async function loginController(req, res, next) {
@@ -110,4 +110,3 @@ export async function updateProfileController(req, res, next) {
     next(err);
   }
 }
-

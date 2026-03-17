@@ -6,7 +6,7 @@ let client;
 export async function connectMongo(app) {
   if (!client) {
     client = new MongoClient(MONGO_URI, {
-      maxPoolSize: 20
+      maxPoolSize: 20,
     });
     await client.connect();
   }
