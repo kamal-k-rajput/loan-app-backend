@@ -2,6 +2,7 @@ import express from "express";
 import {
   createCustomerController,
   listCustomersController,
+  listDealerCustomersController,
   getCustomerController,
   updateCustomerController,
   deleteCustomerController,
@@ -27,6 +28,11 @@ router.post(
 // Auth required for the rest as well
 // Only ADMIN can list all customers
 router.get("/", requireRole(ROLES.ADMIN), listCustomersController);
+
+// Dealers can list only the customers they created, with pagination and date filter
+// Query params: page, limit, startDate, endDate
+router.get("/my", requireRole(ROLES.DEALER), listDealerCustomersController);
+
 router.get("/:customerId", requireAuth, getCustomerController);
 router.put("/:customerId", requireAuth, validateBody(updateCustomerSchema), updateCustomerController);
 router.delete("/:customerId", requireAuth, deleteCustomerController);

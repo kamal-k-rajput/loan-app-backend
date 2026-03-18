@@ -1,6 +1,7 @@
 import {
   createCustomer,
   listCustomers,
+  listCustomersByDealer,
   getCustomerById,
   updateCustomer,
   deleteCustomer,
@@ -23,6 +24,22 @@ export async function createCustomerService(db, session, dealerId, payload) {
 export async function listCustomersService(db, session) {
   const customers = await listCustomers(db, session);
   return customers.map((c) => ({ ...c, id: c._id.toString() }));
+}
+
+export async function listDealerCustomersService(db, session, dealerId, { page, limit, startDate, endDate }) {
+  const { items, total } = await listCustomersByDealer(db, session, dealerId, {
+    page,
+    limit,
+    startDate,
+    endDate
+  });
+
+  return {
+    items: items.map((c) => ({ ...c, id: c._id.toString() })),
+    total,
+    page,
+    limit
+  };
 }
 
 export async function getCustomerService(db, session, customerId) {

@@ -1,6 +1,7 @@
 import {
   createCustomerService,
   listCustomersService,
+  listDealerCustomersService,
   getCustomerService,
   updateCustomerService,
   deleteCustomerService,
@@ -38,6 +39,36 @@ export async function listCustomersController(req, res, next) {
   }
 }
 
+export async function listDealerCustomersController(req, res, next) {
+  try {
+    const db = req.app.locals.db;
+    const session = req.mongoSession;
+
+    if (!req.user || req.user.role !== ROLES.DEALER) {
+      return res.fail(403, "ONLY_DEALER_CAN_LIST_OWN_CUSTOMERS");
+    }
+    if (!req.user.dealerId) {
+      return res.fail(400, "DEALER_ID_MISSING", "Dealer user is not linked to a dealer");
+    }
+
+    const page = parseInt(req.query.page, 10) > 0 ? parseInt(req.query.page, 10) : 1;
+    const limit = parseInt(req.query.limit, 10) > 0 ? parseInt(req.query.limit, 10) : 20;
+    const startDate = req.query.startDate || null;
+    const endDate = req.query.endDate || null;
+
+    const result = await listDealerCustomersService(db, session, req.user.dealerId, {
+      page,
+      limit,
+      startDate,
+      endDate
+    });
+
+    return res.success(result, "DEALER_CUSTOMERS_LIST");
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getCustomerController(req, res, next) {
   try {
     const db = req.app.locals.db;
@@ -55,6 +86,21 @@ export async function updateCustomerController(req, res, next) {
     const db = req.app.locals.db;
     const session = req.mongoSession;
     if (!req.user) return res.fail(401, "AUTH_REQUIRED");
+
+    // If dealer, ensure they can only update customers they created
+    if (req.user.role === ROLES.DEALER) {
+      if (!req.user.dealerId) {
+        return res.fail(400, "DEALER_ID_MISSING", "Dealer user is not linked to a dealer");
+      }
+      const existing = await getCustomerService(db, session, req.params.customerId);
+      if (!existing) {
+        return res.fail(404, "CUSTOMER_NOT_FOUND");
+      }
+      if (!existing.createdByDealer || existing.createdByDealer.toString() !== req.user.dealerId) {
+        return res.fail(403, "CANNOT_UPDATE_OTHER_DEALER_CUSTOMER");
+      }
+    }
+
     const customer = await updateCustomerService(db, session, req.params.customerId, req.body);
     if (!customer) return res.fail(404, "CUSTOMER_NOT_FOUND");
     return res.success(customer, "CUSTOMER_UPDATED");

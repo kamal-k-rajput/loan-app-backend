@@ -45,7 +45,7 @@ export async function changePasswordController(req, res, next) {
   try {
     const session = req.mongoSession;
     const db = req.app.locals.db;
-    const userId = req.headers["x-user-id"];
+    const userId = req.user.id;
     const result = await changePasswordService(db, session, userId, req.body);
     if (!result) {
       return res.fail(400, "CHANGE_PASSWORD_FAILED");
@@ -85,7 +85,7 @@ export async function profileController(req, res, next) {
   try {
     const session = req.mongoSession;
     const db = req.app.locals.db;
-    const userId = req.headers["x-user-id"];
+    const userId = req.user.id;
     const profile = await getProfileService(db, session, userId);
     if (!profile) {
       return res.fail(404, "USER_NOT_FOUND");
@@ -100,7 +100,7 @@ export async function updateProfileController(req, res, next) {
   try {
     const session = req.mongoSession;
     const db = req.app.locals.db;
-    const userId = req.headers["x-user-id"];
+    const userId = req.user.id;
     const updated = await updateProfileService(db, session, userId, req.body);
     if (!updated) {
       return res.fail(404, "USER_NOT_FOUND");

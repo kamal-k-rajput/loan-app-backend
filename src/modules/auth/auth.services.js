@@ -55,13 +55,16 @@ export async function changePasswordService(
   db,
   session,
   userId,
-  { oldPassword, newPassword },
+  { oldPassword, newPassword, newPasswordConfirm },
 ) {
   if (!userId) return false;
   const user = await findUserById(db, session, userId);
   if (!user) return false;
   const ok = await verifyPassword(oldPassword, user.passwordHash);
   if (!ok) {
+    return false;
+  }
+  if (newPasswordConfirm && newPasswordConfirm !== newPassword) {
     return false;
   }
   const newHash = await hashPassword(newPassword);

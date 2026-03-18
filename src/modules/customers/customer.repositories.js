@@ -18,6 +18,39 @@ export async function listCustomers(db, session) {
     .toArray();
 }
 
+export async function listCustomersByDealer(db, session, dealerId, { page, limit, startDate, endDate }) {
+  const filter = {
+    createdByDealer: new ObjectId(dealerId)
+  };
+
+  if (startDate || endDate) {
+    filter.createdAt = {};
+    if (startDate) {
+      filter.createdAt.$gte = new Date(startDate);
+    }
+    if (endDate) {
+      filter.createdAt.$lte = new Date(endDate);
+    }
+  }
+
+  const skip = (page - 1) * limit;
+
+  const cursor = customersCollection(db)
+    .find(filter, { session })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const [items, total] = await Promise.all([cursor.toArray(), customersCollection(db).countDocuments(filter)]);
+
+  return {
+    items,
+    total,
+    page,
+    limit
+  };
+}
+
 export async function getCustomerById(db, session, customerId) {
   return customersCollection(db).findOne({ _id: new ObjectId(customerId) }, { session });
 }

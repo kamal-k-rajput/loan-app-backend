@@ -20,6 +20,7 @@ import { auditLogRouter } from "../modules/auditLogs/auditLog.routes.js";
 import { ledgerRouter } from "../modules/ledger/ledger.routes.js";
 import { reportRouter } from "../modules/reports/report.routes.js";
 import { configRouter } from "../modules/config/config.routes.js";
+import { uploadRouter } from "../utils/uploads/upload.routes.js";
 
 export function registerRoutes(app) {
   const api = express.Router();
@@ -45,6 +46,7 @@ export function registerRoutes(app) {
   api.use("/ledger", ledgerRouter);
   api.use("/reports", reportRouter);
   api.use("/config", configRouter);
+  api.use("/uploads", uploadRouter);
 
   app.use("/api", api);
 }

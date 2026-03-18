@@ -22,11 +22,8 @@ export async function updateUserPassword(db, session, userId, passwordHash) {
 }
 
 export async function updateUserProfile(db, session, userId, updates) {
-  const result = await getUsersCollection(db).findOneAndUpdate(
-    { _id: new ObjectId(userId) },
-    { $set: { ...updates } },
-    { returnDocument: "after", session }
-  );
-  return result.value;
+  const filter = { _id: new ObjectId(userId) };
+  await getUsersCollection(db).updateOne(filter, { $set: { ...updates } }, { session });
+  return getUsersCollection(db).findOne(filter, { session });
 }
 

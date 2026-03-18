@@ -7,7 +7,12 @@ export const loginSchema = Joi.object({
 
 export const changePasswordSchema = Joi.object({
   oldPassword: Joi.string().min(6).required(),
-  newPassword: Joi.string().min(6).required()
+  newPassword: Joi.string().min(6).required(),
+  // Optional but supported for "confirm new password" UI flows
+  newPasswordConfirm: Joi.string()
+    .min(6)
+    .optional()
+    .valid(Joi.ref("newPassword"))
 });
 
 export const forgotPasswordSchema = Joi.object({
