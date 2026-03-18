@@ -5,7 +5,8 @@ import {
   listDisbursements,
   getDisbursementByLoanId
 } from "./disbursement.repositories.js";
-import { LOAN_CONTRACT_STATUS, LOAN_APPLICATION_STATUS } from "../../utils/constants.js";
+import { createLedgerEntryService } from "../ledger/ledgerEntry.services.js";
+import { LOAN_CONTRACT_STATUS, LOAN_APPLICATION_STATUS, LEDGER_ACCOUNT_TYPES, LEDGER_TRANSACTION_TYPES } from "../../utils/constants.js";
 import { ObjectId } from "mongodb";
 
 export async function disburseLoanService(db, session, loanId, payload) {
@@ -63,6 +64,104 @@ export async function disburseLoanService(db, session, loanId, payload) {
     lenderId: contract.lenderId,
     disbursedAmount: payload.disbursedAmount,
     disbursementDate
+  });
+
+  // Create ledger entry for disbursement
+  // Find or create customer loan account
+  let customerLoanAccount = await db.collection("ledger_accounts").findOne(
+    {
+      accountType: LEDGER_ACCOUNT_TYPES.CUSTOMER_LOAN_ACCOUNT,
+      ownerId: loan.customerId,
+      ownerType: "customer"
+    },
+    { session }
+  );
+
+  if (!customerLoanAccount) {
+    // Auto-create customer loan account if it doesn't exist
+    const customer = await db.collection("customers").findOne(
+      { _id: loan.customerId },
+      { session }
+    );
+    const accountName = customer ? `Loan Account - ${customer.name}` : `Loan Account - Customer ${loan.customerId}`;
+    
+    const result = await db.collection("ledger_accounts").insertOne(
+      {
+        accountName,
+        accountType: LEDGER_ACCOUNT_TYPES.CUSTOMER_LOAN_ACCOUNT,
+        ownerId: loan.customerId,
+        ownerType: "customer",
+        balance: 0,
+        createdAt: new Date()
+      },
+      { session }
+    );
+    customerLoanAccount = {
+      _id: result.insertedId,
+      accountName,
+      accountType: LEDGER_ACCOUNT_TYPES.CUSTOMER_LOAN_ACCOUNT,
+      ownerId: loan.customerId,
+      ownerType: "customer",
+      balance: 0
+    };
+  }
+
+  // Find or create lender settlement account
+  let lenderSettlementAccount = await db.collection("ledger_accounts").findOne(
+    {
+      accountType: LEDGER_ACCOUNT_TYPES.LENDER_SETTLEMENT_ACCOUNT,
+      ownerId: contract.lenderId,
+      ownerType: "lender"
+    },
+    { session }
+  );
+
+  if (!lenderSettlementAccount) {
+    // Auto-create lender settlement account if it doesn't exist
+    const lender = await db.collection("lenders").findOne(
+      { _id: contract.lenderId },
+      { session }
+    );
+    const accountName = lender ? `Settlement Account - ${lender.lenderName}` : `Settlement Account - Lender ${contract.lenderId}`;
+    
+    const result = await db.collection("ledger_accounts").insertOne(
+      {
+        accountName,
+        accountType: LEDGER_ACCOUNT_TYPES.LENDER_SETTLEMENT_ACCOUNT,
+        ownerId: contract.lenderId,
+        ownerType: "lender",
+        balance: 0,
+        createdAt: new Date()
+      },
+      { session }
+    );
+    lenderSettlementAccount = {
+      _id: result.insertedId,
+      accountName,
+      accountType: LEDGER_ACCOUNT_TYPES.LENDER_SETTLEMENT_ACCOUNT,
+      ownerId: contract.lenderId,
+      ownerType: "lender",
+      balance: 0
+    };
+  }
+
+  // Create ledger entry with double-entry accounting
+  await createLedgerEntryService(db, session, {
+    referenceType: "loan",
+    referenceId: loanId,
+    description: `Loan disbursement of ₹${payload.disbursedAmount} for loan ${loanId}`,
+    transactions: [
+      {
+        accountId: customerLoanAccount._id.toString(),
+        type: LEDGER_TRANSACTION_TYPES.DEBIT,
+        amount: payload.disbursedAmount
+      },
+      {
+        accountId: lenderSettlementAccount._id.toString(),
+        type: LEDGER_TRANSACTION_TYPES.CREDIT,
+        amount: payload.disbursedAmount
+      }
+    ]
   });
 
   return {

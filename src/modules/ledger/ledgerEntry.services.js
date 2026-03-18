@@ -4,7 +4,9 @@ import {
   listLedgerEntries,
   getLedgerEntryById,
   getLedgerEntriesByLoanId,
-  getTransactionsByEntryId
+  getTransactionsByEntryId,
+  getLedgerEntriesByDealerId,
+  getLedgerEntriesByLenderId
 } from "./ledgerEntry.repositories.js";
 import { updateLedgerAccountBalance, getLedgerAccountById } from "./ledgerAccount.repositories.js";
 import { LEDGER_TRANSACTION_TYPES } from "../../utils/constants.js";
@@ -127,6 +129,50 @@ export async function getLedgerEntryService(db, session, entryId) {
 
 export async function getLedgerEntriesByLoanService(db, session, loanId) {
   const entries = await getLedgerEntriesByLoanId(db, session, loanId);
+  const entriesWithTransactions = await Promise.all(
+    entries.map(async (entry) => {
+      const transactions = await getTransactionsByEntryId(db, session, entry._id);
+      return {
+        ...entry,
+        id: entry._id.toString(),
+        referenceId: entry.referenceId.toString(),
+        transactions: transactions.map((t) => ({
+          ...t,
+          id: t._id.toString(),
+          entryId: t.entryId.toString(),
+          accountId: t.accountId.toString()
+        }))
+      };
+    })
+  );
+
+  return entriesWithTransactions;
+}
+
+export async function getLedgerEntriesByDealerService(db, session, dealerId) {
+  const entries = await getLedgerEntriesByDealerId(db, session, dealerId);
+  const entriesWithTransactions = await Promise.all(
+    entries.map(async (entry) => {
+      const transactions = await getTransactionsByEntryId(db, session, entry._id);
+      return {
+        ...entry,
+        id: entry._id.toString(),
+        referenceId: entry.referenceId.toString(),
+        transactions: transactions.map((t) => ({
+          ...t,
+          id: t._id.toString(),
+          entryId: t.entryId.toString(),
+          accountId: t.accountId.toString()
+        }))
+      };
+    })
+  );
+
+  return entriesWithTransactions;
+}
+
+export async function getLedgerEntriesByLenderService(db, session, lenderId) {
+  const entries = await getLedgerEntriesByLenderId(db, session, lenderId);
   const entriesWithTransactions = await Promise.all(
     entries.map(async (entry) => {
       const transactions = await getTransactionsByEntryId(db, session, entry._id);

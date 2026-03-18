@@ -6,7 +6,9 @@ import {
   createLedgerEntryController,
   listLedgerEntriesController,
   getLedgerEntryController,
-  getLedgerEntriesByLoanController
+  getLedgerEntriesByLoanController,
+  getLedgerEntriesByDealerController,
+  getLedgerEntriesByLenderController
 } from "./ledger.controllers.js";
 import { createLedgerAccountSchema } from "./ledgerAccount.validators.js";
 import { createLedgerEntrySchema } from "./ledgerEntry.validators.js";
@@ -25,5 +27,10 @@ router.post("/entries", requireAuth, validateBody(createLedgerEntrySchema), crea
 router.get("/entries", requireAuth, listLedgerEntriesController);
 router.get("/entries/:entryId", requireAuth, getLedgerEntryController);
 router.get("/entries/loan/:loanId", requireAuth, getLedgerEntriesByLoanController);
+// Convenience routes for dealers and lenders to view their own ledger (must come before parameterized routes)
+router.get("/dealer/my", requireAuth, getLedgerEntriesByDealerController);
+router.get("/lender/my", requireAuth, getLedgerEntriesByLenderController);
+router.get("/entries/dealer/:dealerId", requireAuth, getLedgerEntriesByDealerController);
+router.get("/entries/lender/:lenderId", requireAuth, getLedgerEntriesByLenderController);
 
 export const ledgerRouter = router;

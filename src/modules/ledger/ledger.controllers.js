@@ -7,7 +7,9 @@ import {
   createLedgerEntryService,
   listLedgerEntriesService,
   getLedgerEntryService,
-  getLedgerEntriesByLoanService
+  getLedgerEntriesByLoanService,
+  getLedgerEntriesByDealerService,
+  getLedgerEntriesByLenderService
 } from "./ledgerEntry.services.js";
 import { ROLES } from "../../utils/constants.js";
 
@@ -109,6 +111,64 @@ export async function getLedgerEntriesByLoanController(req, res, next) {
     if (!req.user) return res.fail(401, "AUTH_REQUIRED");
     const entries = await getLedgerEntriesByLoanService(db, session, req.params.loanId);
     return res.success(entries, "LEDGER_ENTRIES_BY_LOAN");
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getLedgerEntriesByDealerController(req, res, next) {
+  try {
+    const db = req.app.locals.db;
+    const session = req.mongoSession;
+    if (!req.user) return res.fail(401, "AUTH_REQUIRED");
+
+    let dealerId = req.params.dealerId;
+    
+    // If route is /dealer/my or user is a dealer, use their own dealerId
+    if (!dealerId || req.user.role === ROLES.DEALER) {
+      if (!req.user.dealerId) {
+        return res.fail(400, "DEALER_ID_MISSING", "Dealer user is not linked to a dealer");
+      }
+      dealerId = req.user.dealerId;
+    } else if (req.user.role !== ROLES.ADMIN) {
+      return res.fail(403, "ONLY_ADMIN_OR_DEALER_CAN_VIEW_DEALER_LEDGER");
+    }
+
+    if (!dealerId) {
+      return res.fail(400, "DEALER_ID_REQUIRED", "Dealer ID is required");
+    }
+
+    const entries = await getLedgerEntriesByDealerService(db, session, dealerId);
+    return res.success(entries, "LEDGER_ENTRIES_BY_DEALER");
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getLedgerEntriesByLenderController(req, res, next) {
+  try {
+    const db = req.app.locals.db;
+    const session = req.mongoSession;
+    if (!req.user) return res.fail(401, "AUTH_REQUIRED");
+
+    let lenderId = req.params.lenderId;
+    
+    // If route is /lender/my or user is a lender, use their own lenderId
+    if (!lenderId || req.user.role === ROLES.LENDER) {
+      if (!req.user.lenderId) {
+        return res.fail(400, "LENDER_ID_MISSING", "Lender user is not linked to a lender");
+      }
+      lenderId = req.user.lenderId;
+    } else if (req.user.role !== ROLES.ADMIN) {
+      return res.fail(403, "ONLY_ADMIN_OR_LENDER_CAN_VIEW_LENDER_LEDGER");
+    }
+
+    if (!lenderId) {
+      return res.fail(400, "LENDER_ID_REQUIRED", "Lender ID is required");
+    }
+
+    const entries = await getLedgerEntriesByLenderService(db, session, lenderId);
+    return res.success(entries, "LEDGER_ENTRIES_BY_LENDER");
   } catch (err) {
     next(err);
   }

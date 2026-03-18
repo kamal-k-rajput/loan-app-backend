@@ -16,7 +16,8 @@ const router = express.Router();
 
 router.post(
   "/",
-  requireAuth,requireRole(ROLES.LENDER), 
+  requireAuth,
+  requireRole(ROLES.LENDER),
   validateBody(createInterestRateSchema),
   createInterestRateController
 );

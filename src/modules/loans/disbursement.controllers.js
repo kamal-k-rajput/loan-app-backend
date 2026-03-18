@@ -24,6 +24,15 @@ export async function disburseLoanController(req, res, next) {
     if (err.message === "LOAN_NOT_APPROVED" || err.message === "CONTRACT_NOT_APPROVED") {
       return res.fail(400, err.message);
     }
+    if (err.message === "CUSTOMER_LOAN_ACCOUNT_NOT_FOUND" || err.message === "LENDER_SETTLEMENT_ACCOUNT_NOT_FOUND") {
+      return res.fail(500, err.message, "Ledger accounts could not be created. Please contact administrator.");
+    }
+    if (err.message && err.message.startsWith("ACCOUNT_NOT_FOUND_")) {
+      return res.fail(404, "LEDGER_ACCOUNT_NOT_FOUND");
+    }
+    if (err.message === "DEBIT_AND_CREDIT_MUST_BALANCE") {
+      return res.fail(400, "DEBIT_AND_CREDIT_MUST_BALANCE");
+    }
     next(err);
   }
 }

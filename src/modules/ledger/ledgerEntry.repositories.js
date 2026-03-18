@@ -59,3 +59,53 @@ export async function getTransactionsByEntryId(db, session, entryId) {
     .find({ entryId: new ObjectId(entryId) }, { session })
     .toArray();
 }
+
+export async function getLedgerEntriesByDealerId(db, session, dealerId) {
+  // Get all loans for this dealer
+  const loans = await db
+    .collection("loan_applications")
+    .find({ dealerId: new ObjectId(dealerId) }, { session })
+    .toArray();
+  
+  const loanIds = loans.map((l) => new ObjectId(l._id));
+  
+  if (loanIds.length === 0) {
+    return [];
+  }
+  
+  return ledgerEntriesCollection(db)
+    .find(
+      {
+        referenceType: "loan",
+        referenceId: { $in: loanIds }
+      },
+      { session }
+    )
+    .sort({ createdAt: -1 })
+    .toArray();
+}
+
+export async function getLedgerEntriesByLenderId(db, session, lenderId) {
+  // Get all loan contracts for this lender
+  const contracts = await db
+    .collection("loan_contracts")
+    .find({ lenderId: new ObjectId(lenderId) }, { session })
+    .toArray();
+  
+  const loanApplicationIds = contracts.map((c) => new ObjectId(c.loanApplicationId));
+  
+  if (loanApplicationIds.length === 0) {
+    return [];
+  }
+  
+  return ledgerEntriesCollection(db)
+    .find(
+      {
+        referenceType: "loan",
+        referenceId: { $in: loanApplicationIds }
+      },
+      { session }
+    )
+    .sort({ createdAt: -1 })
+    .toArray();
+}
