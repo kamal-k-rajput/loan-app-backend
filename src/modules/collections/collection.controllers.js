@@ -28,6 +28,12 @@ export async function recordCollectionController(req, res, next) {
     ) {
       return res.fail(404, err.message);
     }
+    if (
+      err.message === "EMI_ALREADY_PAID" ||
+      err.message === "COLLECTION_ALREADY_SUBMITTED_FOR_EMI"
+    ) {
+      return res.fail(400, err.message);
+    }
     next(err);
   }
 }

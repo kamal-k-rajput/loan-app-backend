@@ -1,11 +1,20 @@
-import { updateLoanStatus, getLoanApplicationById } from "./loanApproval.repositories.js";
+import {
+  updateLoanStatus,
+  getLoanApplicationById,
+} from "./loanApproval.repositories.js";
+import { getLenderById } from "../lenders/lender.repositories.js";
 import { LOAN_APPLICATION_STATUS } from "../../utils/constants.js";
 import { ObjectId } from "mongodb";
 
 /**
  * Move loan to UNDER_REVIEW status and optionally assign a lender
  */
-export async function moveLoanToReviewService(db, session, loanId, lenderId = null) {
+export async function moveLoanToReviewService(
+  db,
+  session,
+  loanId,
+  lenderId = null,
+) {
   const loan = await getLoanApplicationById(db, session, loanId);
   if (!loan) {
     throw new Error("LOAN_NOT_FOUND");
@@ -14,7 +23,7 @@ export async function moveLoanToReviewService(db, session, loanId, lenderId = nu
   // Only allow moving from APPLIED or KYC_PENDING to UNDER_REVIEW
   const allowedStatuses = [
     LOAN_APPLICATION_STATUS.APPLIED,
-    LOAN_APPLICATION_STATUS.KYC_PENDING
+    LOAN_APPLICATION_STATUS.KYC_PENDING,
   ];
 
   if (!allowedStatuses.includes(loan.status)) {
@@ -23,7 +32,7 @@ export async function moveLoanToReviewService(db, session, loanId, lenderId = nu
 
   const updateData = {
     status: LOAN_APPLICATION_STATUS.UNDER_REVIEW,
-    movedToReviewAt: new Date()
+    movedToReviewAt: new Date(),
   };
 
   // If lenderId provided, assign lender
@@ -32,12 +41,18 @@ export async function moveLoanToReviewService(db, session, loanId, lenderId = nu
     updateData.assignedAt = new Date();
   }
 
-  await updateLoanStatus(db, session, loanId, LOAN_APPLICATION_STATUS.UNDER_REVIEW, updateData);
+  await updateLoanStatus(
+    db,
+    session,
+    loanId,
+    LOAN_APPLICATION_STATUS.UNDER_REVIEW,
+    updateData,
+  );
 
   return {
     loanId: loan._id.toString(),
     status: LOAN_APPLICATION_STATUS.UNDER_REVIEW,
-    lenderAssigned: lenderId || null
+    lenderAssigned: lenderId || null,
   };
 }
 
@@ -60,14 +75,29 @@ export async function assignLenderToLoanService(db, session, loanId, lenderId) {
     throw new Error("LENDER_ALREADY_ASSIGNED");
   }
 
-  await updateLoanStatus(db, session, loanId, LOAN_APPLICATION_STATUS.UNDER_REVIEW, {
-    lenderAssigned: new ObjectId(lenderId),
-    assignedAt: new Date()
-  });
+  // Check lender exists and is active
+  const lender = await getLenderById(db, session, lenderId);
+  if (!lender) {
+    throw new Error("LENDER_NOT_FOUND");
+  }
+  if (lender.status !== "ACTIVE") {
+    throw new Error("LENDER_NOT_ACTIVE");
+  }
+
+  await updateLoanStatus(
+    db,
+    session,
+    loanId,
+    LOAN_APPLICATION_STATUS.UNDER_REVIEW,
+    {
+      lenderAssigned: new ObjectId(lenderId),
+      assignedAt: new Date(),
+    },
+  );
 
   return {
     loanId: loan._id.toString(),
     lenderAssigned: lenderId,
-    status: loan.status
+    status: loan.status,
   };
 }
