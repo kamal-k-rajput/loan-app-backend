@@ -715,6 +715,78 @@
           "path": ["api", "dashboard", "dealer", "earnings"]
         }
       }
+    },
+    {
+      "name": "List EMIs — current month pending (default)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/api/emis",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "emis"]
+        },
+        "description": "Dealer: unpaid EMIs (PENDING, OVERDUE, PARTIAL) with dueDate in the current calendar month. Default when query is omitted."
+      }
+    },
+    {
+      "name": "List EMIs — previous month pending",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/api/emis?pendingDueMonth=previous",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "emis"],
+          "query": [
+            {
+              "key": "pendingDueMonth",
+              "value": "previous",
+              "description": "previous calendar month"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "List EMIs — all pending (any due month)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/api/emis?pendingDueMonth=all",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "emis"],
+          "query": [
+            {
+              "key": "pendingDueMonth",
+              "value": "all",
+              "description": "all unpaid EMIs regardless of due month"
+            }
+          ]
+        }
+      }
     }
   ],
   "variable": [

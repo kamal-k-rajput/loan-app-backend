@@ -204,6 +204,7 @@ Each lender sets interest rates.
 
   interestRate: Number,
 
+  // % of loan principal (not a fixed rupee amount)
   processingFee: Number,
 
   createdAt: Date
@@ -269,6 +270,10 @@ Created once loan is approved.
   interestRate: Number,
 
   tenureMonths: Number,
+
+  // Rupee amount at approval: principalAmount * (processingFeePercent / 100)
+  processingFee: Number,
+  processingFeePercent: Number,
 
   emiAmount: Number,
 

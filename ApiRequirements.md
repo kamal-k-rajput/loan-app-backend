@@ -136,6 +136,7 @@ GET    /interest-rates
 GET    /interest-rates/:rateId
 PUT    /interest-rates/:rateId
 DELETE /interest-rates/:rateId
+       `processingFee` on interest-rate config = **percentage of loan principal** (0–100), not a fixed fee.
 
 GET    /interest-rates/lender/:lenderId
 ```
@@ -174,6 +175,8 @@ DEFAULTED
 
 ```
 PUT   /loans/:loanId/approve
+      Body `processingFee` (optional): **% of loan principal** override. If omitted, uses lender’s `interest_rates` row for the loan product’s category.
+      Contract stores rupee fee as `processingFee` and the % used as `processingFeePercent`.
 PUT   /loans/:loanId/reject
 
 GET   /lender/loan-approvals
@@ -199,6 +202,8 @@ GET   /loans/:loanId/emi-schedule
 POST  /loans/:loanId/generate-emi
 
 GET   /emis
+      Dealer: query `pendingDueMonth` = `current` (default) | `previous` | `all`.
+      Returns only unpaid EMIs (PENDING, OVERDUE, PARTIAL); default = due in current calendar month.
 GET   /emis/:emiId
 GET   /emis/loan/:loanId
 ```

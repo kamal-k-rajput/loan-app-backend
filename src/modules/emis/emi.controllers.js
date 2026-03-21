@@ -47,9 +47,26 @@ export async function listEmisController(req, res, next) {
     const db = req.app.locals.db;
     const session = req.mongoSession;
     if (!req.user) return res.fail(401, "AUTH_REQUIRED");
-    const emis = await listEmisService(db, session, req.user);
+
+    /** @type {{ pendingDueMonth?: 'current' | 'previous' | 'all' }} */
+    let options = {};
+    if (req.user.role === ROLES.DEALER) {
+      const raw = req.query.pendingDueMonth;
+      const pendingDueMonth =
+        raw === undefined || raw === "" ? "current" : String(raw);
+      const allowed = ["current", "previous", "all"];
+      if (!allowed.includes(pendingDueMonth)) {
+        return res.fail(400, "INVALID_PENDING_DUE_MONTH");
+      }
+      options = { pendingDueMonth };
+    }
+
+    const emis = await listEmisService(db, session, req.user, options);
     return res.success(emis, "EMIS_LIST");
   } catch (err) {
+    if (err.message === "INVALID_PENDING_DUE_MONTH") {
+      return res.fail(400, "INVALID_PENDING_DUE_MONTH");
+    }
     next(err);
   }
 }
