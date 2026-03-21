@@ -12,9 +12,22 @@ export async function createDealer(db, session, doc) {
   return { _id: result.insertedId, ...doc, status: "ACTIVE" };
 }
 
-export async function listDealers(db, session) {
+export async function listDealers(db, session, { search } = {}) {
+  const query = {};
+
+  if (search && search.trim()) {
+    const searchTerm = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(searchTerm, "i");
+    query.$or = [
+      { dealerName: searchRegex },
+      { ownerName: searchRegex },
+      { email: searchRegex },
+      { phone: searchRegex },
+    ];
+  }
+
   return dealersCollection(db)
-    .find({}, { session })
+    .find(query, { session })
     .toArray();
 }
 

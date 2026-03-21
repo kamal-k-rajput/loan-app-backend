@@ -12,9 +12,22 @@ export async function createLender(db, session, doc) {
   return { _id: result.insertedId, ...doc, status: "ACTIVE" };
 }
 
-export async function listLenders(db, session) {
+export async function listLenders(db, session, { search } = {}) {
+  const query = {};
+
+  if (search && search.trim()) {
+    const searchTerm = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(searchTerm, "i");
+    query.$or = [
+      { lenderName: searchRegex },
+      { contactPerson: searchRegex },
+      { email: searchRegex },
+      { phone: searchRegex },
+    ];
+  }
+
   return lendersCollection(db)
-    .find({}, { session })
+    .find(query, { session })
     .toArray();
 }
 

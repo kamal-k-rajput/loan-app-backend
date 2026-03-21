@@ -25,7 +25,8 @@ export async function listDealersController(req, res, next) {
   try {
     const db = req.app.locals.db;
     const session = req.mongoSession;
-    const dealers = await listDealersService(db, session);
+    const { search } = req.query;
+    const dealers = await listDealersService(db, session, { search });
     return res.success(dealers, "DEALERS_LIST");
   } catch (err) {
     next(err);
