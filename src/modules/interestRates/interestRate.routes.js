@@ -2,6 +2,7 @@ import express from "express";
 import {
   createInterestRateController,
   listInterestRatesController,
+  listInterestRatesByCategoryController,
   getInterestRateController,
   updateInterestRateController,
   deleteInterestRateController,
@@ -22,6 +23,13 @@ router.post(
   createInterestRateController
 );
 router.get("/", requireRole(ROLES.ADMIN), listInterestRatesController);
+router.get(
+  "/by-category",
+  requireAuth,
+  requireRole(ROLES.ADMIN, ROLES.LENDER, ROLES.DEALER),
+  listInterestRatesByCategoryController
+);
+router.get("/lender/:lenderId", requireAuth, getInterestRatesByLenderController);
 router.get("/:rateId", requireAuth, getInterestRateController);
 router.put(
   "/:rateId",
@@ -30,7 +38,5 @@ router.put(
   updateInterestRateController
 );
 router.delete("/:rateId", requireAuth, deleteInterestRateController);
-
-router.get("/lender/:lenderId", requireAuth, getInterestRatesByLenderController);
 
 export const interestRateRouter = router;

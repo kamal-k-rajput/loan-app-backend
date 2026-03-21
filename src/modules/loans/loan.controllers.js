@@ -6,7 +6,25 @@ import {
   cancelLoanService,
   getLoansByStatusService,
 } from "./loan.services.js";
+import { calculateEmiPreviewService } from "./loanPreview.services.js";
 import { ROLES } from "../../utils/constants.js";
+
+export async function calculateEmiPreviewController(req, res, next) {
+  try {
+    const db = req.app.locals.db;
+    const session = req.mongoSession;
+    if (!req.user || req.user.role !== ROLES.DEALER) {
+      return res.fail(403, "ONLY_DEALER_CAN_PREVIEW_EMI");
+    }
+    const result = await calculateEmiPreviewService(db, session, req.body);
+    return res.success(result, "LOAN_EMI_PREVIEW");
+  } catch (err) {
+    if (err.message === "INTEREST_RATE_NOT_FOUND") {
+      return res.fail(404, "INTEREST_RATE_NOT_FOUND");
+    }
+    next(err);
+  }
+}
 
 export async function applyLoanController(req, res, next) {
   try {

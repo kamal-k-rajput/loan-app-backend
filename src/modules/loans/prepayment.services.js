@@ -6,22 +6,13 @@ import {
   updateLoanContractPrincipal,
   createPrepaymentRecord
 } from "./prepayment.repositories.js";
-import { LOAN_CONTRACT_STATUS, EMI_STATUS } from "../../utils/constants.js";
+import { LOAN_CONTRACT_STATUS, EMI_STATUS, INTEREST_RATE_TYPES } from "../../utils/constants.js";
+import {
+  buildReducingBalanceSchedule,
+  buildFlatRateSchedule,
+  normalizeInterestRateType
+} from "../../utils/emiCalculator.js";
 import { ObjectId } from "mongodb";
-
-/**
- * Calculate EMI using reducing balance method
- */
-function calculateEMI(principal, annualRate, tenureMonths) {
-  const monthlyRate = annualRate / 12 / 100;
-  if (monthlyRate === 0) {
-    return principal / tenureMonths;
-  }
-  const emi =
-    (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
-    (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-  return Math.round(emi * 100) / 100;
-}
 
 /**
  * Calculate prepayment details
@@ -145,10 +136,15 @@ export async function processPrepaymentService(db, session, loanId, payload) {
 
   // Generate new EMI schedule with reduced principal
   const newTenure = pendingEmis.length; // Keep same number of EMIs
-  const emiAmount = calculateEMI(newPrincipal, contract.interestRate, newTenure);
+  const rateType = normalizeInterestRateType(contract.rateType);
+  const rebuilt =
+    rateType === INTEREST_RATE_TYPES.REDUCING
+      ? buildReducingBalanceSchedule(newPrincipal, contract.interestRate, newTenure)
+      : buildFlatRateSchedule(newPrincipal, contract.interestRate, newTenure);
+  const emiAmount = rebuilt.emiAmount;
+  const planRows = rebuilt.schedule;
 
   const emiRecords = [];
-  let currentPrincipal = newPrincipal;
   const today = new Date();
   const lastPaidEmiDate = paidEmis.length > 0 ? paidEmis[paidEmis.length - 1].dueDate : contract.disbursementDate || today;
 
@@ -156,14 +152,7 @@ export async function processPrepaymentService(db, session, loanId, payload) {
     const dueDate = new Date(lastPaidEmiDate);
     dueDate.setMonth(dueDate.getMonth() + month);
 
-    const monthlyRate = contract.interestRate / 12 / 100;
-    const interestComponent = currentPrincipal * monthlyRate;
-    const principalComponent = emiAmount - interestComponent;
-    currentPrincipal = currentPrincipal - principalComponent;
-
-    const interest = Math.round(interestComponent * 100) / 100;
-    const principalComp = Math.round(principalComponent * 100) / 100;
-    const remaining = Math.max(0, Math.round(currentPrincipal * 100) / 100);
+    const row = planRows[month - 1];
 
     emiRecords.push({
       loanId: new ObjectId(loanId),
@@ -171,19 +160,12 @@ export async function processPrepaymentService(db, session, loanId, payload) {
       emiNumber: paidEmis.length + month,
       dueDate,
       emiAmount: Math.round(emiAmount * 100) / 100,
-      principalComponent: principalComp,
-      interestComponent: interest,
-      remainingPrincipal: remaining,
+      principalComponent: row.principalComponent,
+      interestComponent: row.interestComponent,
+      remainingPrincipal: row.remainingPrincipal,
       status: EMI_STATUS.PENDING,
       createdAt: new Date()
     });
-  }
-
-  // Adjust last EMI
-  if (emiRecords.length > 0) {
-    const lastEmi = emiRecords[emiRecords.length - 1];
-    lastEmi.remainingPrincipal = 0;
-    lastEmi.principalComponent = lastEmi.remainingPrincipal + lastEmi.principalComponent;
   }
 
   await createEmiSchedule(db, session, emiRecords);

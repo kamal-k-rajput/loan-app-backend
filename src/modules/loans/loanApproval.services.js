@@ -5,7 +5,8 @@ import {
   getLoanApplicationById
 } from "./loanApproval.repositories.js";
 import { getInterestRatesByLender } from "../interestRates/interestRate.repositories.js";
-import { LOAN_APPLICATION_STATUS } from "../../utils/constants.js";
+import { INTEREST_RATE_TYPES, LOAN_APPLICATION_STATUS } from "../../utils/constants.js";
+import { normalizeInterestRateType } from "../../utils/emiCalculator.js";
 import { ObjectId } from "mongodb";
 
 function roundMoney(n) {
@@ -33,6 +34,19 @@ async function resolveProcessingFeePercent(db, session, lenderId, loan, payload)
   const rates = await getInterestRatesByLender(db, session, lenderId);
   const match = rates.find((r) => r.productCategory === product.category);
   return match?.processingFee != null ? Number(match.processingFee) : 0;
+}
+
+async function resolveRateTypeFromProduct(db, session, lenderId, loan) {
+  if (!loan.productId) return INTEREST_RATE_TYPES.FLAT;
+  const product = await db.collection("loan_products").findOne(
+    { _id: loan.productId },
+    { session, projection: { category: 1 } }
+  );
+  if (!product?.category) return INTEREST_RATE_TYPES.FLAT;
+  const rates = await getInterestRatesByLender(db, session, lenderId);
+  const match = rates.find((r) => r.productCategory === product.category);
+  if (!match) return INTEREST_RATE_TYPES.FLAT;
+  return normalizeInterestRateType(match.rateType);
 }
 
 export async function approveLoanService(db, session, loanId, lenderId, payload) {
@@ -80,6 +94,8 @@ export async function approveLoanService(db, session, loanId, lenderId, payload)
     processingFeePercent
   );
 
+  const rateType = await resolveRateTypeFromProduct(db, session, lenderId, loan);
+
   // Create loan contract (processingFee = rupees; processingFeePercent = % used)
   const contract = await createLoanContract(db, session, {
     loanApplicationId: new ObjectId(loanId),
@@ -88,6 +104,7 @@ export async function approveLoanService(db, session, loanId, lenderId, payload)
     lenderId: new ObjectId(lenderId),
     principalAmount,
     interestRate: payload.interestRate,
+    rateType,
     tenureMonths: loan.tenure,
     processingFee: processingFeeAmount,
     processingFeePercent,

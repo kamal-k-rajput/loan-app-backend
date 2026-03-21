@@ -26,12 +26,13 @@ export async function listCustomersService(db, session) {
   return customers.map((c) => ({ ...c, id: c._id.toString() }));
 }
 
-export async function listDealerCustomersService(db, session, dealerId, { page, limit, startDate, endDate }) {
+export async function listDealerCustomersService(db, session, dealerId, { page, limit, startDate, endDate, search }) {
   const { items, total } = await listCustomersByDealer(db, session, dealerId, {
     page,
     limit,
     startDate,
-    endDate
+    endDate,
+    search
   });
 
   return {

@@ -316,6 +316,26 @@
       }
     },
     {
+      "name": "List interest rates by category",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/api/interest-rates/by-category",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "interest-rates", "by-category"]
+        },
+        "description": "All rates grouped by AUTO / BATTERY / PERSONAL. Each rate: id, productCategory, interestRate, processingFee (no lenderId). Use rateId for EMI preview."
+      }
+    },
+    {
       "name": "Get Interest Rate by ID",
       "request": {
         "method": "GET",
@@ -395,8 +415,36 @@
           "protocol": "http",
           "host": ["localhost"],
           "port": "4000",
-          "path": ["api", "interest-rates", "lenders", "{{lenderId}}"]
+          "path": ["api", "interest-rates", "lender", "{{lenderId}}"]
         }
+      }
+    },
+    {
+      "name": "Calculate EMI preview (real-time, no DB)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"loanAmount\": 100000,\n  \"tenureMonths\": 24,\n  \"rateId\": \"{{rateId}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/api/loans/calculate-emi-preview",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "loans", "calculate-emi-preview"]
+        },
+        "description": "Loads interest + file-charge % by rateId only. Returns monthly EMI, one-time processing fee amount, full in-memory schedule. Dealer only."
       }
     },
     {

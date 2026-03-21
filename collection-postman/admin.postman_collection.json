@@ -592,7 +592,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"lenderId\": \"{{lenderId}}\",\n  \"productCategory\": \"AUTO\",\n  \"interestRate\": 12.5,\n  \"processingFee\": 2\n}"
+          "raw": "{\n  \"lenderId\": \"{{lenderId}}\",\n  \"productCategory\": \"AUTO\",\n  \"interestRate\": 12.5,\n  \"processingFee\": 2,\n  \"rateType\": \"FLAT\"\n}"
         },
         "url": {
           "raw": "http://localhost:4000/api/interest-rates",

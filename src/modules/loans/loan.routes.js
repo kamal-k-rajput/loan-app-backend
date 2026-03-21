@@ -1,6 +1,7 @@
 import express from "express";
 import {
   applyLoanController,
+  calculateEmiPreviewController,
   listLoansController,
   getLoanController,
   updateLoanController,
@@ -17,6 +18,7 @@ import {
   getDisbursementByLoanController
 } from "./disbursement.controllers.js";
 import { applyLoanSchema, updateLoanSchema } from "./loan.validators.js";
+import { calculateEmiPreviewSchema } from "./loanPreview.validators.js";
 import { approveLoanSchema, rejectLoanSchema } from "./loanApproval.validators.js";
 import { disburseLoanSchema } from "./disbursement.validators.js";
 import { validateBody } from "../../shared/validate.js";
@@ -26,6 +28,12 @@ import { ROLES } from "../../utils/constants.js";
 const router = express.Router();
 
 router.post("/apply", requireRole(ROLES.DEALER), validateBody(applyLoanSchema), applyLoanController);
+router.post(
+  "/calculate-emi-preview",
+  requireRole(ROLES.DEALER),
+  validateBody(calculateEmiPreviewSchema),
+  calculateEmiPreviewController
+);
 router.get("/", requireAuth, listLoansController);
 router.get("/:loanId", requireAuth, getLoanController);
 router.put("/:loanId/update", requireAuth, validateBody(updateLoanSchema), updateLoanController);

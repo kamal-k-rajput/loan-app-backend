@@ -55,12 +55,15 @@ export async function listDealerCustomersController(req, res, next) {
     const limit = parseInt(req.query.limit, 10) > 0 ? parseInt(req.query.limit, 10) : 20;
     const startDate = req.query.startDate || null;
     const endDate = req.query.endDate || null;
+    const searchRaw = req.query.search != null ? String(req.query.search) : "";
+    const search = searchRaw.length > 200 ? searchRaw.slice(0, 200) : searchRaw;
 
     const result = await listDealerCustomersService(db, session, req.user.dealerId, {
       page,
       limit,
       startDate,
-      endDate
+      endDate,
+      search
     });
 
     return res.success(result, "DEALER_CUSTOMERS_LIST");

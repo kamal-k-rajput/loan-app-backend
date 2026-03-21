@@ -1,6 +1,7 @@
 import {
   createInterestRateService,
   listInterestRatesService,
+  listInterestRatesByCategoryService,
   getInterestRateService,
   getInterestRatesByLenderService,
   updateInterestRateService,
@@ -45,6 +46,18 @@ export async function listInterestRatesController(req, res, next) {
     }
     const rates = await listInterestRatesService(db, session);
     return res.success(rates, "INTEREST_RATES_LIST");
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listInterestRatesByCategoryController(req, res, next) {
+  try {
+    const db = req.app.locals.db;
+    const session = req.mongoSession;
+    if (!req.user) return res.fail(401, "AUTH_REQUIRED");
+    const result = await listInterestRatesByCategoryService(db, session);
+    return res.success(result, "INTEREST_RATES_BY_CATEGORY");
   } catch (err) {
     next(err);
   }

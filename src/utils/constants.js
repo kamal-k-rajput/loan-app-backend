@@ -10,6 +10,15 @@ export const ROLES = {
   DEALER: "DEALER",
 };
 
+/** Loan product / interest-rate categories (must match interest rate validators) */
+export const LOAN_PRODUCT_CATEGORIES = ["AUTO", "BATTERY", "PERSONAL"];
+
+/** Interest on principal: FLAT vs REDUCING (reducing-balance EMI) */
+export const INTEREST_RATE_TYPES = {
+  FLAT: "FLAT",
+  REDUCING: "REDUCING"
+};
+
 export const CUSTOMER_KYC_STATUS = {
   PENDING: "PENDING",
   VERIFIED: "VERIFIED",

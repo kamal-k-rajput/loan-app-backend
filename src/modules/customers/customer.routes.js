@@ -8,9 +8,12 @@ import {
   deleteCustomerController,
   customerLoansController,
   customerEmisController,
-  customerPaymentsController
+  customerPaymentsController,
 } from "./customer.controllers.js";
-import { createCustomerSchema, updateCustomerSchema } from "./customer.validators.js";
+import {
+  createCustomerSchema,
+  updateCustomerSchema,
+} from "./customer.validators.js";
 import { validateBody } from "../../shared/validate.js";
 import { requireAuth, requireRole } from "../../middleware/authMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
@@ -22,7 +25,7 @@ router.post(
   "/",
   requireRole(ROLES.DEALER),
   validateBody(createCustomerSchema),
-  createCustomerController
+  createCustomerController,
 );
 
 // Auth required for the rest as well
@@ -34,7 +37,12 @@ router.get("/", requireRole(ROLES.ADMIN), listCustomersController);
 router.get("/my", requireRole(ROLES.DEALER), listDealerCustomersController);
 
 router.get("/:customerId", requireAuth, getCustomerController);
-router.put("/:customerId", requireAuth, validateBody(updateCustomerSchema), updateCustomerController);
+router.put(
+  "/:customerId",
+  requireAuth,
+  validateBody(updateCustomerSchema),
+  updateCustomerController,
+);
 router.delete("/:customerId", requireAuth, deleteCustomerController);
 
 router.get("/:customerId/loans", requireAuth, customerLoansController);
@@ -42,4 +50,3 @@ router.get("/:customerId/emis", requireAuth, customerEmisController);
 router.get("/:customerId/payments", requireAuth, customerPaymentsController);
 
 export const customerRouter = router;
-

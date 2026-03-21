@@ -4,6 +4,10 @@ function customersCollection(db) {
   return db.collection("customers");
 }
 
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export async function createCustomer(db, session, doc) {
   const result = await customersCollection(db).insertOne(
     { ...doc, createdAt: new Date() },
@@ -18,7 +22,7 @@ export async function listCustomers(db, session) {
     .toArray();
 }
 
-export async function listCustomersByDealer(db, session, dealerId, { page, limit, startDate, endDate }) {
+export async function listCustomersByDealer(db, session, dealerId, { page, limit, startDate, endDate, search }) {
   const filter = {
     createdByDealer: new ObjectId(dealerId)
   };
@@ -31,6 +35,12 @@ export async function listCustomersByDealer(db, session, dealerId, { page, limit
     if (endDate) {
       filter.createdAt.$lte = new Date(endDate);
     }
+  }
+
+  const q = typeof search === "string" ? search.trim() : "";
+  if (q.length > 0) {
+    const rx = new RegExp(escapeRegex(q), "i");
+    filter.$or = [{ name: rx }, { phone: rx }, { email: rx }];
   }
 
   const skip = (page - 1) * limit;

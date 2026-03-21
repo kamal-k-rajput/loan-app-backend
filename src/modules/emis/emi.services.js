@@ -5,7 +5,17 @@ import {
   listEmis,
   getEmiById
 } from "./emi.repositories.js";
-import { EMI_STATUS, LOAN_CONTRACT_STATUS, ROLES } from "../../utils/constants.js";
+import {
+  EMI_STATUS,
+  INTEREST_RATE_TYPES,
+  LOAN_CONTRACT_STATUS,
+  ROLES
+} from "../../utils/constants.js";
+import {
+  buildReducingBalanceSchedule,
+  buildFlatRateSchedule,
+  normalizeInterestRateType
+} from "../../utils/emiCalculator.js";
 import { ObjectId } from "mongodb";
 
 /** Unpaid EMI statuses (dealer “pending” collection view). */
@@ -26,25 +36,6 @@ function getCalendarMonthBounds(monthsOffset = 0) {
   const start = new Date(year, month, 1, 0, 0, 0, 0);
   const end = new Date(year, month + 1, 0, 23, 59, 59, 999);
   return { start, end };
-}
-
-/**
- * Calculate EMI using reducing balance method
- * EMI = P × r × (1+r)^n / ((1+r)^n - 1)
- * Where:
- * P = Principal
- * r = Monthly interest rate (annual rate / 12 / 100)
- * n = Number of months
- */
-function calculateEMI(principal, annualRate, tenureMonths) {
-  const monthlyRate = annualRate / 12 / 100;
-  if (monthlyRate === 0) {
-    return principal / tenureMonths;
-  }
-  const emi =
-    (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
-    (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-  return Math.round(emi * 100) / 100; // Round to 2 decimal places
 }
 
 /**
@@ -70,11 +61,15 @@ export async function generateEmiScheduleService(db, session, loanId) {
   const principal = contract.principalAmount;
   const annualRate = contract.interestRate;
   const tenureMonths = contract.tenureMonths;
-  const emiAmount = calculateEMI(principal, annualRate, tenureMonths);
+  const rateType = normalizeInterestRateType(contract.rateType);
+  const scheduleBuilt =
+    rateType === INTEREST_RATE_TYPES.REDUCING
+      ? buildReducingBalanceSchedule(principal, annualRate, tenureMonths)
+      : buildFlatRateSchedule(principal, annualRate, tenureMonths);
+  const { emiAmount, schedule: planRows } = scheduleBuilt;
 
   // Generate EMI schedule
   const emiRecords = [];
-  let remainingPrincipal = principal;
   const disbursementDate = contract.disbursementDate || new Date();
   const startDate = new Date(disbursementDate);
 
@@ -82,15 +77,10 @@ export async function generateEmiScheduleService(db, session, loanId) {
     const dueDate = new Date(startDate);
     dueDate.setMonth(dueDate.getMonth() + month);
 
-    const monthlyRate = annualRate / 12 / 100;
-    const interestComponent = remainingPrincipal * monthlyRate;
-    const principalComponent = emiAmount - interestComponent;
-    remainingPrincipal = remainingPrincipal - principalComponent;
-
-    // Round to 2 decimal places
-    const interest = Math.round(interestComponent * 100) / 100;
-    const principalComp = Math.round(principalComponent * 100) / 100;
-    const remaining = Math.max(0, Math.round(remainingPrincipal * 100) / 100);
+    const row = planRows[month - 1];
+    const interest = row.interestComponent;
+    const principalComp = row.principalComponent;
+    const remaining = row.remainingPrincipal;
 
     emiRecords.push({
       loanId: new ObjectId(loanId),
@@ -104,13 +94,6 @@ export async function generateEmiScheduleService(db, session, loanId) {
       status: EMI_STATUS.PENDING,
       createdAt: new Date()
     });
-  }
-
-  // Adjust last EMI to account for rounding differences
-  if (emiRecords.length > 0) {
-    const lastEmi = emiRecords[emiRecords.length - 1];
-    lastEmi.remainingPrincipal = 0;
-    lastEmi.principalComponent = lastEmi.remainingPrincipal + lastEmi.principalComponent;
   }
 
   await createEmiSchedule(db, session, emiRecords);
