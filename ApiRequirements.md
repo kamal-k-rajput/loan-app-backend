@@ -89,6 +89,7 @@ GET    /lenders/:lenderId/collections
 ```
 POST   /customers
 GET    /customers
+GET    /customers/my — query: page, limit, startDate, endDate, **search** (optional; matches name, phone, or email, case-insensitive partial)
 GET    /customers/:customerId
 PUT    /customers/:customerId
 DELETE /customers/:customerId
@@ -139,6 +140,9 @@ DELETE /interest-rates/:rateId
        `processingFee` on interest-rate config = **percentage of loan principal** (0–100), not a fixed fee.
 
 GET    /interest-rates/lender/:lenderId
+GET    /interest-rates/by-category
+       Admin, lender, dealer. All rates grouped by `productCategory` (`byCategory` map + `categories[]` with counts).
+       Each rate: `id`, `productCategory`, `interestRate`, `processingFee`, `createdAt` — no `lenderId`; use `id` as `rateId` for EMI preview.
 ```
 
 ---
@@ -146,6 +150,10 @@ GET    /interest-rates/lender/:lenderId
 # 9. Loan Application APIs
 
 ```
+POST   /loans/calculate-emi-preview
+       Dealer only. Body: `loanAmount`, `tenureMonths`, `rateId` (interest_rates _id).
+       Reads annual % and file-charge % from that row; returns `monthlyEmi`, `processingFeeAmount`, `schedule[]` (not stored).
+
 POST   /loans/apply
 GET    /loans
 GET    /loans/:loanId
