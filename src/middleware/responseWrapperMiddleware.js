@@ -4,13 +4,13 @@ export function responseWrapperMiddleware(req, res, next) {
   res.success = (data = null, message = "SUCCESS") => {
     const payload = {
       server: {
-        responseCode: 200 // server is running
+        responseCode: 200, // server is running
       },
       data: {
         responseCode: 200,
         message,
-        result: data
-      }
+        result: data,
+      },
     };
 
     return originalJson(payload);
@@ -19,15 +19,16 @@ export function responseWrapperMiddleware(req, res, next) {
   res.fail = (code, message = "FAILED", details = null) => {
     const payload = {
       server: {
-        responseCode: 200
+        responseCode: 200,
       },
       data: {
         responseCode: code,
         message,
-        error: details
-      }
+        error: details,
+      },
     };
 
+    res.status(code);
     return originalJson(payload);
   };
 

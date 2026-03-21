@@ -27,7 +27,7 @@ export async function createUserService(db, session, payload) {
 export async function listUsersService(
   db,
   session,
-  { role, fromDate, toDate, limit, offset },
+  { role, fromDate, toDate, limit, offset, search },
 ) {
   const { total, docs } = await listUsers(db, session, {
     role,
@@ -35,6 +35,7 @@ export async function listUsersService(
     toDate,
     limit,
     offset,
+    search,
   });
 
   const items = docs.map((u) => {
@@ -80,4 +81,3 @@ export async function deactivateUserService(db, session, userId) {
 export function listRolesService() {
   return listRoles();
 }
-

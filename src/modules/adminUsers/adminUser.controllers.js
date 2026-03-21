@@ -28,6 +28,7 @@ export async function listUsersController(req, res, next) {
       role,
       fromDate,
       toDate,
+      search,
       limit: rawLimit,
       offset: rawOffset,
     } = req.query;
@@ -39,6 +40,7 @@ export async function listUsersController(req, res, next) {
       role,
       fromDate,
       toDate,
+      search,
       limit,
       offset,
     });
@@ -106,6 +108,8 @@ export async function deactivateUserController(req, res, next) {
   try {
     const db = req.app.locals.db;
     const session = req.mongoSession;
+    if (req.params.userId === req.user.id)
+      return res.fail(400, "CANNOT_DEACTIVATE_SELF");
     const user = await deactivateUserService(db, session, req.params.userId);
     if (!user) return res.fail(404, "USER_NOT_FOUND");
     return res.success(user, "USER_DEACTIVATED");

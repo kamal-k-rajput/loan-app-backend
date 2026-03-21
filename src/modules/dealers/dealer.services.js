@@ -50,8 +50,8 @@ export async function createDealerService(db, session, payload) {
   };
 }
 
-export async function listDealersService(db, session) {
-  const dealers = await listDealers(db, session);
+export async function listDealersService(db, session, { search } = {}) {
+  const dealers = await listDealers(db, session, { search });
   return dealers.map((d) => ({ ...d, id: d._id.toString() }));
 }
 

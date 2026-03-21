@@ -10,9 +10,9 @@ export async function createUser(db, session, doc) {
     {
       ...doc,
       status: "ACTIVE",
-      createdAt: new Date()
+      createdAt: new Date(),
     },
-    { session }
+    { session },
   );
   return { _id: result.insertedId, ...doc, status: "ACTIVE" };
 }
@@ -20,7 +20,7 @@ export async function createUser(db, session, doc) {
 export async function listUsers(
   db,
   session,
-  { role, fromDate, toDate, limit, offset },
+  { role, fromDate, toDate, limit, offset, search },
 ) {
   const query = {};
 
@@ -41,27 +41,40 @@ export async function listUsers(
     }
   }
 
+  // Search by name, email, or phone (mobileNo) - case-insensitive partial match
+  if (search && search.trim()) {
+    const searchTerm = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(searchTerm, "i");
+    query.$or = [
+      { name: searchRegex },
+      { email: searchRegex },
+      { phone: searchRegex },
+    ];
+  }
+
   const cursor = usersCollection(db).find(query, { session });
 
   const total = await cursor.clone().count();
 
-  const docs = await cursor
-    .skip(offset)
-    .limit(limit)
-    .toArray();
+  const docs = await cursor.skip(offset).limit(limit).toArray();
 
   return { total, docs };
 }
 
 export async function getUserById(db, session, userId) {
-  return usersCollection(db).findOne({ _id: new ObjectId(userId) }, { session });
+  return usersCollection(db).findOne(
+    { _id: new ObjectId(userId) },
+    { session },
+  );
 }
 
 export async function updateUser(db, session, userId, updates) {
   const filter = { _id: new ObjectId(userId) };
   const update = { $set: { ...updates, updatedAt: new Date() } };
 
-  const result = await usersCollection(db).updateOne(filter, update, { session });
+  const result = await usersCollection(db).updateOne(filter, update, {
+    session,
+  });
   if (result.matchedCount === 0) {
     return null;
   }
@@ -70,7 +83,10 @@ export async function updateUser(db, session, userId, updates) {
 }
 
 export async function deleteUser(db, session, userId) {
-  const result = await usersCollection(db).deleteOne({ _id: new ObjectId(userId) }, { session });
+  const result = await usersCollection(db).deleteOne(
+    { _id: new ObjectId(userId) },
+    { session },
+  );
   return result.deletedCount > 0;
 }
 
@@ -78,7 +94,9 @@ export async function setUserStatus(db, session, userId, status) {
   const filter = { _id: new ObjectId(userId) };
   const update = { $set: { status, updatedAt: new Date() } };
 
-  const result = await usersCollection(db).updateOne(filter, update, { session });
+  const result = await usersCollection(db).updateOne(filter, update, {
+    session,
+  });
   if (result.matchedCount === 0) {
     return null;
   }
@@ -89,4 +107,3 @@ export async function setUserStatus(db, session, userId, status) {
 export function listRoles() {
   return Object.values(ROLES);
 }
-
