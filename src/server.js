@@ -5,13 +5,22 @@ import { transactionMiddleware } from "./middleware/transactionMiddleware.js";
 import { responseWrapperMiddleware } from "./middleware/responseWrapperMiddleware.js";
 import { optionalAuthMiddleware } from "./middleware/authMiddleware.js";
 import { registerRoutes } from "./startup/routes.js";
+import { closePdfBrowser } from "./modules/pdf/pdf.services.js";
 
 dotenv.config();
+
+function gracefulExit() {
+  closePdfBrowser()
+    .catch(() => {})
+    .finally(() => process.exit(0));
+}
+process.once("SIGINT", gracefulExit);
+process.once("SIGTERM", gracefulExit);
 
 async function bootstrap() {
   const app = express();
 
-  app.use(express.json());
+  app.use(express.json({ limit: "8mb" }));
 
   // Basic CORS setup to allow frontend on port 3000
   app.use((req, res, next) => {

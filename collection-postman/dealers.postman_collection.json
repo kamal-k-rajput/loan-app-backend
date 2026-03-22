@@ -94,6 +94,34 @@
       }
     },
     {
+      "name": "PDF render from HTML",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"html\": \"<h1>EMI schedule</h1><table><tr><th>#</th><th>Due</th><th>EMI</th></tr><tr><td>1</td><td>2026-04-01</td><td>5000</td></tr></table>\",\n  \"filename\": \"emi-schedule\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/api/pdf/render",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["api", "pdf", "render"]
+        },
+        "description": "Returns application/pdf (save response in Postman). For Excel: POST multipart field \"file\" (.xlsx), optional sheetIndex, optional filename."
+      }
+    },
+    {
       "name": "Create Customer",
       "request": {
         "method": "POST",
